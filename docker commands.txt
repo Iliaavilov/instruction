@@ -1,0 +1,33 @@
+docker images - список всех изображений
+docker image prune - удалить все конейтеры с тегом <none>
+docker ps -a - список всех контейнеров
+docker ps -q | % { docker stop $_ } - остановить все контейнеры (через windows powershell)	
+docker container prune - удалить все остановленные контейнеры
+docker build . -t <image name> - построить image с заданным именем
+docker run -p <port на хост машине (aka на компе)>:<порт внутри контейнера> <image name> - запуск изображения с открытием порта
+
+
+Пример докерфайла
+------------
+FROM python:3.7  - базовое изображение - линукс с установленным питоном
+
+RUN apt-get update ##[edited]
+RUN apt-get install ffmpeg libsm6 libxext6  -y
+
+COPY requirements.txt requirements.txt - копируем из текущей папки файл в текущую папку контейнера
+RUN pip install --no-cache-dir -r requirements.txt - устанавливаем все библиотеки из файла requirements.txt
+
+COPY . . - копируем все файлы из текущей директории в текущую директорию контейнера
+
+CMD [ "python", "server.py" ] - запуск server.py как python файл
+------------
+
+
+Пример docker-compose.yaml файла
+------------
+services:
+  image_captioning:
+    build: . - собираем с докерфайлом из текущей директории
+    ports:
+      - 8888:1567 - открываем порт 8888 на компе и пробрасываем порт 1567 из докерконтейнера к порту 8888 на компе.
+------------
